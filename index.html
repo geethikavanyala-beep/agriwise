@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriWise - Smart Farming Platform</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#183522;background:#f6faf7}
+header{background:#176b3a;color:white;padding:16px 6%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+.logo{font-size:25px;font-weight:bold}nav a{color:white;text-decoration:none;margin-left:18px}
+.hero{padding:75px 8%;background:linear-gradient(135deg,#dff3e3,#f7fff8);text-align:center}
+.hero h1{font-size:52px;margin:10px}.hero p{font-size:20px;max-width:750px;margin:20px auto}
+.btn{background:#176b3a;color:white;border:0;padding:12px 18px;border-radius:8px;font-weight:bold;cursor:pointer}
+section{padding:55px 7%;max-width:1200px;margin:auto}h2{font-size:34px;text-align:center}.sub{text-align:center;max-width:750px;margin:0 auto 30px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.card{background:white;border:1px solid #d7e6db;border-radius:15px;padding:22px;box-shadow:0 5px 20px #174c2410}
+.demo{background:#123b25;color:white;border-radius:15px;padding:25px}.demo select,.demo input{width:100%;padding:12px;margin:8px 0 15px;border-radius:7px;border:0}
+.result{background:#effbef;color:#183522;padding:15px;border-radius:9px;margin-top:15px}.flow{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}.step{background:white;border:2px solid #cce3d1;border-radius:12px;padding:18px;min-width:145px;text-align:center}
+footer{background:#123b25;color:white;text-align:center;padding:30px}
+@media(max-width:750px){.grid{grid-template-columns:1fr}.hero h1{font-size:38px}nav{display:none}}
+</style>
+</head>
+<body>
+<header><div class="logo">🌱 AgriWise</div><nav>
+<a href="#diagnosis">Diagnosis</a><a href="#market">Marketplace</a><a href="#precautions">Precautions</a><a href="#flow">How It Works</a></nav></header>
+
+<div class="hero">
+<h1>Smart Farming. Better Decisions.</h1>
+<p>AgriWise combines smart crop disease diagnosis with a local farmer marketplace to help farmers protect crops and connect directly with buyers.</p>
+<button class="btn" onclick="document.getElementById('diagnosis').scrollIntoView()">Try Prototype</button>
+</div>
+
+<section id="diagnosis">
+<h2>🔬 Crop Disease Diagnostic</h2>
+<p class="sub">Prototype demonstration of the proposed workflow: capture a crop image, identify a possible condition, estimate severity and provide next steps.</p>
+<div class="grid">
+<div class="demo">
+<h3>Try Diagnosis</h3>
+<label>Crop</label>
+<select id="crop"><option>Tomato</option><option>Potato</option><option>Rice</option><option>Chilli</option></select>
+<label>Observed symptom</label>
+<select id="symptom"><option>Brown or black leaf spots</option><option>White powder on leaves</option><option>Yellowing leaves</option><option>Wilting or curling</option></select>
+<label>Upload leaf image</label>
+<input type="file" accept="image/*">
+<button class="btn" onclick="diagnose()">Analyze Crop</button>
+<div id="result" class="result" style="display:none"></div>
+</div>
+<div class="card"><h3>Proposed Features</h3><ul>
+<li>Disease name and confidence</li><li>Low / medium / high severity</li>
+<li>Organic and chemical treatment guidance</li><li>Diagnosis history</li><li>Expert escalation for uncertain cases</li><li>Offline capture and later sync</li><li>Crop-disease encyclopedia</li></ul></div>
+<div class="card"><h3>Prototype Status</h3><p>This page demonstrates the user interface and decision workflow. A production version can connect a trained CNN model such as MobileNetV2 using TensorFlow/PyTorch.</p><b>Educational prototype — not a definitive diagnosis.</b></div>
+</div>
+</section>
+
+<section id="market" style="background:#eaf6ed;max-width:none">
+<div style="max-width:1100px;margin:auto"><h2>🧺 Local Farmer Marketplace</h2>
+<p class="sub">A proposed marketplace where farmers can list produce and buyers can discover local offers, communicate, order and rate transactions.</p>
+<div class="grid">
+<div class="card"><h3>👨‍🌾 Farmer Listing</h3><p>Add crop photo, quantity, price and harvest date.</p><button class="btn" onclick="alert('Prototype: Farmer listing form')">Create Listing</button></div>
+<div class="card"><h3>🔎 Buyer Search</h3><p>Search and filter produce by crop, location, distance and price.</p><button class="btn" onclick="alert('Prototype: Buyer search and filters')">Find Produce</button></div>
+<div class="card"><h3>🤝 Orders & Trust</h3><p>Direct chat, order tracking, payment concept and two-way ratings.</p><button class="btn" onclick="alert('Prototype: Order and rating flow')">View Orders</button></div>
+</div></div>
+</section>
+
+<section id="precautions">
+<h2>🛡️ Farmer Safety & Precautions</h2>
+<p class="sub">The platform is intended to support farmer decisions while encouraging responsible verification.</p>
+<div class="grid">
+<div class="card"><h3>📷 Capture Clearly</h3><ul><li>Take clear photos in good light.</li><li>Show affected and healthy parts.</li><li>Provide crop and symptom information.</li></ul></div>
+<div class="card"><h3>🧑‍🌾 Verify Advice</h3><ul><li>Use AI as a screening aid.</li><li>Escalate uncertain cases to a verified agri-expert.</li><li>Follow product labels and local agricultural guidance.</li></ul></div>
+<div class="card"><h3>🔐 Protect Data</h3><ul><li>Secure authentication.</li><li>Protect crop images, location and transaction data.</li><li>Share only information required for the service.</li></ul></div>
+</div>
+</section>
+
+<section id="flow" style="background:#eef7f0;max-width:none">
+<div style="max-width:1100px;margin:auto"><h2>⚙️ How AgriWise Works</h2>
+<div class="flow">
+<div class="step"><b>1. Capture</b><br>Photograph crop leaf</div>
+<div class="step"><b>2. Diagnose</b><br>Screen disease</div>
+<div class="step"><b>3. Treat</b><br>Follow guidance</div>
+<div class="step"><b>4. List</b><br>List produce</div>
+<div class="step"><b>5. Sell</b><br>Buyer orders directly</div>
+</div>
+<h2 style="margin-top:45px">System Architecture</h2>
+<div class="grid">
+<div class="card"><b>Client Layer</b><p>React PWA / React Native with camera and offline cache.</p></div>
+<div class="card"><b>API Layer</b><p>Node.js + Express or FastAPI.</p></div>
+<div class="card"><b>Intelligence Layer</b><p>TensorFlow/PyTorch CNN model.</p></div>
+<div class="card"><b>Data Layer</b><p>PostgreSQL, cloud image storage and Redis.</p></div>
+<div class="card"><b>Cloud</b><p>AWS / Render / Vercel.</p></div>
+<div class="card"><b>Accessibility</b><p>Multilingual, icon-first and low-bandwidth design.</p></div>
+</div></div>
+</section>
+
+<section>
+<h2>🚀 Future Scope</h2><div class="grid">
+<div class="card"><h3>🎙️ Voice Diagnosis</h3><p>Regional-language voice input.</p></div>
+<div class="card"><h3>🛰️ Satellite & Drone</h3><p>Field-level crop health monitoring.</p></div>
+<div class="card"><h3>💳 Finance & Insurance</h3><p>Explore crop-loss-linked services.</p></div>
+<div class="card"><h3>🚚 Cold-chain Logistics</h3><p>Pickup and delivery integrations.</p></div>
+</div></section>
+
+<footer><b>AgriWise</b><br>Smart Crop Disease Diagnostic & Local Farmer Marketplace<br><small>Working educational web prototype</small></footer>
+
+<script>
+function diagnose(){
+let s=document.getElementById('symptom').value,c=document.getElementById('crop').value;
+let d=s.includes('powder')?'Possible powdery mildew':s.includes('spots')?'Possible leaf spot / blight':s.includes('Yellowing')?'Possible nutrient deficiency or disease stress':'Possible wilt / water-stress condition';
+let r=document.getElementById('result');r.style.display='block';
+r.innerHTML='<b>Prototype Screening Result</b><br>Crop: '+c+'<br>Possible condition: '+d+'<br><br><b>Next step:</b> Capture a clear image, review disease information and escalate uncertain cases to a verified agri-expert.';
+}
+</script>
+</body></html>
