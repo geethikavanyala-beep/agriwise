@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgriWise — Smart Crop Diagnostic &amp; Farmer Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --canopy:#0F1F16;
+    --canopy-2:#16301F;
+    --paper:#F5F1E4;
+    --paper-2:#EDE7D4;
+    --marigold:#E8A33D;
+    --marigold-dim:#c88a2f;
+    --leaf:#5C8A4C;
+    --rust:#B23A2E;
+    --ink:#161810;
+    --ink-soft:#4a4a3f;
+    --line: rgba(22,24,16,0.12);
+    --line-dark: rgba(245,241,228,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+  @media (max-width:640px){.wrap{padding:0 18px;}}
+
+  /* NAV */
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(245,241,228,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;max-width:1180px;margin:0 auto;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:1.25rem;}
+  .brand .mark{width:28px;height:28px;flex:none;}
+  .nav-links{display:flex;gap:28px;font-size:0.92rem;font-weight:500;}
+  .nav-links a{text-decoration:none;opacity:0.75;transition:opacity .15s;}
+  .nav-links a:hover{opacity:1;}
+  .nav-cta{
+    background:var(--canopy);color:var(--paper);
+    padding:9px 18px;border-radius:100px;font-size:0.88rem;font-weight:600;
+    text-decoration:none; white-space:nowrap;
+  }
+  @media (max-width:760px){.nav-links{display:none;}}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    background:var(--canopy);
+    color:var(--paper);
+    overflow:hidden;
+  }
+  .hero-inner{
+    max-width:1180px;margin:0 auto;padding:88px 28px 64px;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;
+  }
+  @media (max-width:900px){.hero-inner{grid-template-columns:1fr; padding:56px 20px 40px;}}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace; font-size:0.76rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--marigold); border:1px solid rgba(232,163,61,0.4); padding:6px 12px; border-radius:100px;
+    margin-bottom:26px;
+  }
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--marigold);animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+  .hero h1{font-size:clamp(2.4rem,5vw,3.6rem);line-height:1.04;}
+  .hero h1 em{font-style:normal;color:var(--marigold);}
+  .hero p.lede{font-size:1.12rem;line-height:1.55;color:rgba(245,241,228,0.78);max-width:520px;margin-top:20px;}
+  .hero-ctas{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:14px 24px;border-radius:100px;font-weight:600;font-size:0.95rem;
+    text-decoration:none; border:1px solid transparent; cursor:pointer; transition:transform .15s ease, background .15s;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--marigold);color:var(--canopy);}
+  .btn-primary:hover{background:#f0ae4d;}
+  .btn-ghost{background:transparent;color:var(--paper);border-color:var(--line-dark);}
+  .btn-ghost:hover{background:rgba(245,241,228,0.08);}
+
+  /* leaf scan visual */
+  .scan-card{
+    position:relative; background:var(--canopy-2);
+    border:1px solid var(--line-dark); border-radius:20px; padding:26px;
+  }
+  .scan-frame{
+    position:relative; background:#0A160F; border-radius:14px; overflow:hidden;
+    aspect-ratio:1/1;
+  }
+  .scan-frame svg{width:100%;height:100%;}
+  .scan-line{
+    position:absolute; left:0; right:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--marigold), transparent);
+    box-shadow:0 0 16px 2px rgba(232,163,61,0.8);
+    animation:sweep 2.6s ease-in-out infinite;
+  }
+  @keyframes sweep{0%{top:6%;}50%{top:92%;}100%{top:6%;}}
+  .scan-readout{display:flex;justify-content:space-between;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:rgba(245,241,228,0.6);}
+  .scan-readout b{color:var(--marigold);font-weight:600;}
+
+  /* STAT BAR */
+  .stats{background:var(--canopy-2);color:var(--paper);border-top:1px solid var(--line-dark);}
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);}
+  .stat{padding:34px 24px;text-align:center;border-left:1px solid var(--line-dark);}
+  .stat:first-child{border-left:none;}
+  @media (max-width:700px){.stats-grid{grid-template-columns:1fr;}.stat{border-left:none;border-top:1px solid var(--line-dark);}.stat:first-child{border-top:none;}}
+  .stat .num{font-family:'Fraunces',serif;font-weight:700;font-size:2.2rem;color:var(--marigold);}
+  .stat .lbl{font-size:0.86rem;color:rgba(245,241,228,0.68);margin-top:4px;}
+
+  /* SECTION generic */
+  section{padding:90px 0;}
+  .section-head{max-width:640px;margin-bottom:56px;}
+  .section-head .eyebrow-light{
+    font-family:'IBM Plex Mono',monospace;font-size:0.76rem;text-transform:uppercase;letter-spacing:0.08em;
+    color:var(--leaf); margin-bottom:14px; display:block;
+  }
+  .section-head h2{font-size:clamp(1.7rem,3vw,2.3rem);}
+  .section-head p{margin-top:14px;color:var(--ink-soft);font-size:1.02rem;line-height:1.6;}
+
+  /* HOW IT WORKS */
+  .flow{display:flex;gap:0;overflow-x:auto;padding-bottom:8px;}
+  .flow-step{flex:1;min-width:190px;position:relative;padding:0 22px 0 0;}
+  .flow-step:not(:last-child)::after{
+    content:'';position:absolute;top:19px;right:0;width:100%;height:1px;background:var(--line);
+  }
+  .flow-num{
+    width:38px;height:38px;border-radius:50%;background:var(--canopy);color:var(--paper);
+    display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:0.9rem;
+    position:relative;z-index:1;
+  }
+  .flow-step h3{font-size:1.05rem;margin-top:16px;font-family:'IBM Plex Sans',sans-serif;font-weight:600;}
+  .flow-step p{font-size:0.9rem;color:var(--ink-soft);margin-top:6px;line-height:1.5;}
+  @media (max-width:900px){.flow{flex-direction:column;} .flow-step:not(:last-child)::after{display:none;} .flow-step{padding:0 0 30px 0;}}
+
+  /* MODULE TABS */
+  .modules{background:var(--paper-2);}
+  .tab-bar{display:flex;gap:10px;margin-bottom:40px;flex-wrap:wrap;}
+  .tab-btn{
+    padding:11px 20px;border-radius:100px;border:1px solid var(--line);background:transparent;
+    font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:0.9rem;cursor:pointer;color:var(--ink-soft);
+    transition:all .15s;
+  }
+  .tab-btn.active{background:var(--canopy);color:var(--paper);border-color:var(--canopy);}
+  .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  @media (max-width:900px){.feature-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:640px){.feature-grid{grid-template-columns:1fr;}}
+  .feature-card{
+    background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:24px;
+  }
+  .feature-card .fnum{font-family:'IBM Plex Mono',monospace;color:var(--marigold-dim);font-size:0.82rem;}
+  .feature-card h3{font-size:1.05rem;margin-top:10px;font-family:'IBM Plex Sans',sans-serif;font-weight:600;}
+  .feature-card p{font-size:0.9rem;color:var(--ink-soft);margin-top:8px;line-height:1.55;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* DEMO */
+  .demo-shell{
+    display:grid;grid-template-columns:1fr 1fr;gap:36px;
+    background:var(--canopy);color:var(--paper);border-radius:24px;padding:44px;
+  }
+  @media (max-width:900px){.demo-shell{grid-template-columns:1fr;padding:28px;}}
+  .demo-left h2{color:var(--paper);}
+  .sample-row{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap;}
+  .sample-leaf{
+    width:64px;height:64px;border-radius:12px;border:2px solid transparent;cursor:pointer;overflow:hidden;
+    background:var(--canopy-2); display:flex;align-items:center;justify-content:center;transition:border-color .15s;
+  }
+  .sample-leaf.active,.sample-leaf:hover{border-color:var(--marigold);}
+  .sample-leaf svg{width:70%;height:70%;}
+  .demo-hint{font-size:0.86rem;color:rgba(245,241,228,0.6);margin-top:16px;}
+  .demo-right{background:var(--canopy-2);border-radius:18px;padding:24px;border:1px solid var(--line-dark);}
+  .demo-frame{position:relative;background:#0A160F;border-radius:14px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .demo-frame svg{width:60%;height:60%;}
+  .scan-active .scan-line{display:block;}
+  .scan-line{display:none;}
+  .result-card{margin-top:20px;display:none;}
+  .result-card.show{display:block;animation:fadein .4s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  .result-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line-dark);font-size:0.92rem;}
+  .result-row:last-child{border-bottom:none;}
+  .result-row .k{color:rgba(245,241,228,0.6);}
+  .result-row .v{font-weight:600;}
+  .sev-badge{padding:3px 10px;border-radius:100px;font-size:0.76rem;font-weight:600;font-family:'IBM Plex Mono',monospace;}
+  .sev-high{background:rgba(178,58,46,0.2);color:#e88377;}
+  .sev-med{background:rgba(232,163,61,0.2);color:var(--marigold);}
+  .sev-low{background:rgba(92,138,76,0.2);color:#8fbf7c;}
+  .treat-box{margin-top:14px;background:rgba(245,241,228,0.06);border-radius:10px;padding:14px;font-size:0.86rem;line-height:1.5;color:rgba(245,241,228,0.85);}
+  .scan-status{font-family:'IBM Plex Mono',monospace;font-size:0.8rem;color:var(--marigold);margin-top:14px;min-height:18px;}
+
+  /* MARKETPLACE */
+  .market-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;margin-bottom:30px;}
+  .price-tag{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--canopy);}
+  .listing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  @media (max-width:980px){.listing-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.listing-grid{grid-template-columns:1fr;}}
+  .listing-card{background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden;}
+  .listing-img{aspect-ratio:4/3;background:var(--paper-2);display:flex;align-items:center;justify-content:center;}
+  .listing-img svg{width:44%;height:44%;}
+  .listing-body{padding:16px;}
+  .listing-body h4{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:1rem;margin:0;}
+  .listing-meta{font-size:0.8rem;color:var(--ink-soft);margin-top:4px;}
+  .listing-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
+  .buy-btn{
+    background:var(--leaf);color:#fff;border:none;padding:8px 14px;border-radius:100px;font-size:0.8rem;font-weight:600;cursor:pointer;
+  }
+  .buy-btn:hover{background:#4f7940;}
+  .trust{font-size:0.76rem;color:var(--marigold-dim);font-family:'IBM Plex Mono',monospace;margin-top:6px;}
+
+  /* IMPACT */
+  .impact{background:var(--canopy);color:var(--paper);}
+  .impact .section-head h2{color:var(--paper);}
+  .impact .section-head p{color:rgba(245,241,228,0.7);}
+  .impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+  @media (max-width:900px){.impact-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.impact-grid{grid-template-columns:1fr;}}
+  .impact-card{background:var(--canopy-2);border:1px solid var(--line-dark);border-radius:16px;padding:22px;}
+  .impact-card .big{font-family:'Fraunces',serif;font-weight:700;font-size:1.6rem;color:var(--marigold);}
+  .impact-card p{font-size:0.86rem;color:rgba(245,241,228,0.72);margin-top:8px;line-height:1.5;}
+
+  /* CTA FOOTER */
+  .cta-band{
+    background:var(--marigold); color:var(--canopy); border-radius:24px; padding:56px;
+    display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap;
+  }
+  .cta-band h2{font-size:1.9rem;max-width:480px;}
+  footer{background:var(--canopy-2);color:rgba(245,241,228,0.6);padding:36px 0;font-size:0.84rem;}
+  .footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+
+  ::selection{background:var(--marigold);color:var(--canopy);}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important;}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 28 28" fill="none"><path d="M14 2C8 2 3 8 3 15c0 6 5 11 11 11s11-5 11-11C25 8 20 2 14 2z" fill="#5C8A4C"/><path d="M14 6c-3 3-3 9 0 15" stroke="#0F1F16" stroke-width="1.4" fill="none"/></svg>
+      AgriWise
+    </div>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#diagnose">Diagnose</a>
+      <a href="#market">Marketplace</a>
+      <a href="#impact">Impact</a>
+    </nav>
+    <a class="nav-cta" href="#demo">Try the demo</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <span class="eyebrow"><span class="dot"></span>College Tech Exhibit · 2026 Prototype</span>
+      <h1>Diagnose the leaf.<br><em>Sell the harvest.</em></h1>
+      <p class="lede">AgriWise puts an AI plant doctor in every farmer's pocket and a fair, middleman-free marketplace at their doorstep — built for low bandwidth, low literacy, and high urgency.</p>
+      <div class="hero-ctas">
+        <a href="#demo" class="btn btn-primary">Scan a leaf →</a>
+        <a href="#market" class="btn btn-ghost">Browse marketplace</a>
+      </div>
+    </div>
+    <div class="scan-card">
+      <div class="scan-frame">
+        <svg viewBox="0 0 200 200" fill="none">
+          <path d="M100 20C60 40 40 90 55 140c10 32 45 40 45 40s35-8 45-40c15-50-5-100-45-120z" fill="#1E3A26" stroke="#5C8A4C" stroke-width="2"/>
+          <path d="M100 35v130M100 70c-15 5-28 18-32 32M100 95c15 3 28 14 34 28M100 55c-10 4-20 12-25 22" stroke="#3E6B34" stroke-width="1.5" fill="none"/>
+          <circle cx="78" cy="95" r="5" fill="#B23A2E" opacity="0.85"/>
+          <circle cx="92" cy="130" r="3.5" fill="#B23A2E" opacity="0.7"/>
+          <circle cx="115" cy="80" r="4" fill="#B23A2E" opacity="0.6"/>
+        </svg>
+        <div class="scan-line"></div>
+      </div>
+      <div class="scan-readout"><span>model: mobilenet-v2-cnn</span><b>live</b></div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="wrap stats-grid">
+      <div class="stat"><div class="num">30%+</div><div class="lbl">yield lost to late-detected disease</div></div>
+      <div class="stat"><div class="num">40–60%</div><div class="lbl">margin taken by middlemen</div></div>
+      <div class="stat"><div class="num">1 : 1000+</div><div class="lbl">expert-to-farmer ratio in rural India</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-light">How it works</span>
+      <h2>One photo in, a fair sale out.</h2>
+      <p>Five steps connect the field to the buyer — no expert visit and no middleman required.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-step"><div class="flow-num">1</div><h3>Capture</h3><p>Farmer photographs a crop leaf, online or off.</p></div>
+      <div class="flow-step"><div class="flow-num">2</div><h3>Diagnose</h3><p>The CNN model detects disease and severity in seconds.</p></div>
+      <div class="flow-step"><div class="flow-num">3</div><h3>Treat</h3><p>Farmer follows an organic or chemical treatment plan.</p></div>
+      <div class="flow-step"><div class="flow-num">4</div><h3>List</h3><p>Healthy produce goes up for sale with fair pricing.</p></div>
+      <div class="flow-step"><div class="flow-num">5</div><h3>Sell</h3><p>Buyer orders directly — no middleman in between.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="modules" id="modules">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-light">Two engines, one platform</span>
+      <h2>Everything a farmer needs, in one app.</h2>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="dx">Dx · Disease Diagnostic</button>
+      <button class="tab-btn" data-tab="mk">Mk · Farmer Marketplace</button>
+    </div>
+    <div class="tab-panel active" id="tab-dx">
+      <div class="feature-grid">
+        <div class="feature-card"><div class="fnum">01</div><h3>Instant Photo Diagnosis</h3><p>Upload or capture a leaf image; get a disease name and confidence score in seconds.</p></div>
+        <div class="feature-card"><div class="fnum">02</div><h3>Severity &amp; Treatment</h3><p>Organic and chemical treatment options, ranked by severity: low, medium, high.</p></div>
+        <div class="feature-card"><div class="fnum">03</div><h3>Diagnosis History</h3><p>Every farmer keeps a timeline of past scans, crops, and outcomes.</p></div>
+        <div class="feature-card"><div class="fnum">04</div><h3>Expert Escalation</h3><p>Low-confidence cases route automatically to a verified agri-expert.</p></div>
+        <div class="feature-card"><div class="fnum">05</div><h3>Offline Capture</h3><p>Photos are captured in the field with no signal, and sync once connectivity returns.</p></div>
+        <div class="feature-card"><div class="fnum">06</div><h3>Disease Encyclopedia</h3><p>A searchable library of crop → common disease → symptoms → prevention.</p></div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-mk">
+      <div class="feature-grid">
+        <div class="feature-card"><div class="fnum">01</div><h3>List &amp; Discover Produce</h3><p>Farmers list crops with photos, quantity, price and harvest date; buyers filter by location.</p></div>
+        <div class="feature-card"><div class="fnum">02</div><h3>Buy Farm Inputs</h3><p>Verified sellers offer seeds, fertiliser, pesticides and equipment rental.</p></div>
+        <div class="feature-card"><div class="fnum">03</div><h3>Chat &amp; Negotiate</h3><p>In-app chat or click-to-call connects buyers and farmers directly.</p></div>
+        <div class="feature-card"><div class="fnum">04</div><h3>Orders &amp; Payments</h3><p>Cart, checkout, cash-on-delivery or online payment, with live order tracking.</p></div>
+        <div class="feature-card"><div class="fnum">05</div><h3>Ratings &amp; Trust Score</h3><p>Two-way reviews build a reliable, accountable trading community.</p></div>
+        <div class="feature-card"><div class="fnum">06</div><h3>Live Mandi Prices</h3><p>Nearby market price reference, so farmers always price fairly.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="diagnose">
+  <div class="wrap" id="demo">
+    <div class="section-head">
+      <span class="eyebrow-light">Live demo</span>
+      <h2>Try the diagnostic engine</h2>
+      <p>Pick a sample leaf below to run a simulated scan — this is how the AI-assisted diagnosis appears to a farmer in the field.</p>
+    </div>
+    <div class="demo-shell">
+      <div class="demo-left">
+        <h2 class="display" style="font-size:1.5rem;">Choose a sample leaf</h2>
+        <p style="color:rgba(245,241,228,0.65);font-size:0.92rem;margin-top:8px;">In the real app this comes from the phone camera or gallery.</p>
+        <div class="sample-row" id="sampleRow"></div>
+        <div class="demo-hint">Tap a leaf, then watch the scan run on the right.</div>
+      </div>
+      <div class="demo-right">
+        <div class="demo-frame" id="demoFrame">
+          <svg viewBox="0 0 200 200" fill="none" id="demoLeaf">
+            <path d="M100 20C60 40 40 90 55 140c10 32 45 40 45 40s35-8 45-40c15-50-5-100-45-120z" fill="#1E3A26" stroke="#5C8A4C" stroke-width="2"/>
+            <path d="M100 35v130" stroke="#3E6B34" stroke-width="1.5"/>
+          </svg>
+          <div class="scan-line"></div>
+        </div>
+        <div class="scan-status" id="scanStatus">Waiting for a sample…</div>
+        <div class="result-card" id="resultCard">
+          <div class="result-row"><span class="k">Diagnosis</span><span class="v" id="rDisease">—</span></div>
+          <div class="result-row"><span class="k">Confidence</span><span class="v" id="rConfidence">—</span></div>
+          <div class="result-row"><span class="k">Severity</span><span class="v"><span class="sev-badge" id="rSeverity">—</span></span></div>
+          <div class="treat-box" id="rTreatment"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="modules" id="market">
+  <div class="wrap">
+    <div class="market-toolbar">
+      <div class="section-head" style="margin-bottom:0;">
+        <span class="eyebrow-light">Local marketplace</span>
+        <h2>Fresh from the field, direct to you</h2>
+      </div>
+    </div>
+    <div class="listing-grid" id="listingGrid"></div>
+  </div>
+</section>
+
+<section id="impact" class="impact">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow-light">Expected impact</span>
+      <h2>Why AgriWise matters</h2>
+      <p>Built for the real conditions of Indian farming — low bandwidth, low literacy, high urgency.</p>
+    </div>
+    <div class="impact-grid">
+      <div class="impact-card"><div class="big">↑ Yield</div><p>Earlier disease detection protects harvests before damage spreads.</p></div>
+      <div class="impact-card"><div class="big">↑ Income</div><p>Direct-to-buyer sales cut out middleman margins for farmers.</p></div>
+      <div class="impact-card"><div class="big">24×7</div><p>Diagnostic access, unlike scarce in-person expert visits.</p></div>
+      <div class="impact-card"><div class="big">Any Language</div><p>Multilingual, icon-first UI built for low-literacy users.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Ready to see it on the exhibition floor?</h2>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <a href="#demo" class="btn" style="background:var(--canopy);color:var(--paper);">Run the demo</a>
+        <a href="#market" class="btn" style="background:transparent;color:var(--canopy);border-color:var(--canopy);">See the marketplace</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span>AgriWise — Smart Crop Disease Diagnostic &amp; Local Farmer Marketplace · College tech exhibit prototype</span>
+    <span>AI-assisted diagnoses are advisory only.</span>
+  </div>
+</footer>
+
+<script>
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Sample leaves + diagnosis simulation
+const samples = [
+  {
+    name:'Leaf Spot',
+    color:'#B23A2E',
+    disease:'Early Blight (Alternaria solani)',
+    confidence:'94.2%',
+    severity:'medium',
+    treatment:'Remove and destroy infected leaves. Apply a copper-based fungicide every 7–10 days. Improve airflow by spacing plants and avoid overhead watering.'
+  },
+  {
+    name:'Rust',
+    color:'#c88a2f',
+    disease:'Leaf Rust (Puccinia spp.)',
+    confidence:'88.7%',
+    severity:'high',
+    treatment:'Apply a triazole fungicide immediately. Rotate crops next season and remove volunteer plants that can harbour spores over winter.'
+  },
+  {
+    name:'Healthy',
+    color:'#5C8A4C',
+    disease:'No disease detected',
+    confidence:'97.5%',
+    severity:'low',
+    treatment:'Crop looks healthy. Continue routine monitoring and maintain current irrigation and nutrient schedule.'
+  },
+  {
+    name:'Mildew',
+    color:'#EDE7D4',
+    disease:'Powdery Mildew',
+    confidence:'91.0%',
+    severity:'medium',
+    treatment:'Spray with a sulfur or neem-oil based solution weekly. Prune dense foliage to increase sunlight and airflow around leaves.'
+  }
+];
+
+const sampleRow = document.getElementById('sampleRow');
+samples.forEach((s,i)=>{
+  const el = document.createElement('div');
+  el.className='sample-leaf'+(i===0?' active':'');
+  el.innerHTML = `<svg viewBox="0 0 100 100" fill="none"><path d="M50 8C30 18 20 45 27 70c5 16 23 20 23 20s18-4 23-20c7-25-3-52-23-62z" fill="${s.color}22" stroke="${s.color}" stroke-width="3"/></svg>`;
+  el.addEventListener('click',()=>runScan(i, el));
+  sampleRow.appendChild(el);
+});
+
+const demoFrame = document.getElementById('demoFrame');
+const scanStatus = document.getElementById('scanStatus');
+const resultCard = document.getElementById('resultCard');
+
+function runScan(idx, el){
+  document.querySelectorAll('.sample-leaf').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  resultCard.classList.remove('show');
+  demoFrame.classList.remove('scan-active');
+  void demoFrame.offsetWidth; // restart animation
+  demoFrame.classList.add('scan-active');
+  const s = samples[idx];
+  const steps = ['Reading image…','Running CNN inference…','Cross-checking symptoms…','Finalising diagnosis…'];
+  let i=0;
+  scanStatus.textContent = steps[0];
+  const iv = setInterval(()=>{
+    i++;
+    if(i<steps.length){ scanStatus.textContent = steps[i]; }
+    else{
+      clearInterval(iv);
+      scanStatus.textContent = 'Scan complete.';
+      document.getElementById('rDisease').textContent = s.disease;
+      document.getElementById('rConfidence').textContent = s.confidence;
+      const sevEl = document.getElementById('rSeverity');
+      sevEl.textContent = s.severity.charAt(0).toUpperCase()+s.severity.slice(1);
+      sevEl.className = 'sev-badge sev-'+s.severity;
+      document.getElementById('rTreatment').textContent = s.treatment;
+      resultCard.classList.add('show');
+    }
+  }, 550);
+}
+
+// Marketplace listings
+const listings = [
+  {crop:'Tomatoes', qty:'40 kg', price:'₹22/kg', farmer:'R. Patel · 3.2 km', trust:'★ 4.8 · 62 sales', color:'#B23A2E'},
+  {crop:'Wheat', qty:'2 quintal', price:'₹2,150/qtl', farmer:'S. Yadav · 5.6 km', trust:'★ 4.6 · 41 sales', color:'#E8A33D'},
+  {crop:'Spinach', qty:'15 kg', price:'₹18/kg', farmer:'A. Devi · 1.9 km', trust:'★ 4.9 · 88 sales', color:'#5C8A4C'},
+  {crop:'Onions', qty:'60 kg', price:'₹16/kg', farmer:'M. Singh · 4.1 km', trust:'★ 4.5 · 27 sales', color:'#c88a2f'}
+];
+const listingGrid = document.getElementById('listingGrid');
+listings.forEach(l=>{
+  const card = document.createElement('div');
+  card.className='listing-card';
+  card.innerHTML = `
+    <div class="listing-img"><svg viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="34" fill="${l.color}22" stroke="${l.color}" stroke-width="3"/></svg></div>
+    <div class="listing-body">
+      <h4>${l.crop} <span style="color:var(--ink-soft);font-weight:400;">· ${l.qty}</span></h4>
+      <div class="listing-meta">${l.farmer}</div>
+      <div class="trust">${l.trust}</div>
+      <div class="listing-foot">
+        <span class="price-tag">${l.price}</span>
+        <button class="buy-btn">Contact</button>
+      </div>
+    </div>`;
+  card.querySelector('.buy-btn').addEventListener('click',()=>{
+    card.querySelector('.buy-btn').textContent='Request sent ✓';
+    card.querySelector('.buy-btn').disabled = true;
+    card.querySelector('.buy-btn').style.opacity='0.7';
+  });
+  listingGrid.appendChild(card);
+});
+</script>
+</body>
+</html>
