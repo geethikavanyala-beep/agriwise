@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FocusLens AI — Working Prototype</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#18202b;--muted:#687385;--line:#e8ebf0;--blue:#5267ff;--blue2:#eaf0ff;--green:#1f9d72;--orange:#f29a38;--red:#e75b6f;--shadow:0 10px 30px rgba(32,44,72,.07)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);background:var(--bg)}
+button,input{font:inherit}button{cursor:pointer;border:0}.app{display:flex;min-height:100vh}.side{width:245px;background:#101522;color:#dce2ef;padding:24px 16px;position:fixed;inset:0 auto 0 0}.brand{font-size:21px;font-weight:800;padding:8px 12px 26px;color:#fff}.brand span{color:#8290ff}.nav{display:grid;gap:7px}.nav button{background:transparent;color:#aeb8ca;text-align:left;padding:12px 13px;border-radius:11px}.nav button.active,.nav button:hover{background:#20283b;color:#fff}.main{margin-left:245px;width:calc(100% - 245px);padding:28px 34px 45px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.top h1{font-size:27px;margin:0}.sub{color:var(--muted);font-size:14px;margin-top:5px}.pill{background:#eaf7f2;color:#177956;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700}.page{display:none}.page.active{display:block}.grid{display:grid;gap:18px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.two{grid-template-columns:1.4fr 1fr}.three{grid-template-columns:repeat(3,1fr)}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}.label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}.metric{font-size:31px;font-weight:800;margin:7px 0}.delta{font-size:12px;color:var(--green)}.card h2{font-size:17px;margin:0 0 15px}.barrow{display:flex;align-items:center;gap:10px;margin:14px 0}.barrow .day{width:34px;color:var(--muted);font-size:12px}.track{height:10px;background:#eef0f4;border-radius:9px;flex:1;overflow:hidden}.fill{height:100%;background:var(--blue);border-radius:9px}.barrow b{font-size:12px;width:30px;text-align:right}.pulse{display:flex;align-items:center;gap:24px}.timer{width:210px;height:210px;border-radius:50%;border:14px solid #e9edff;display:grid;place-items:center;position:relative}.timer:after{content:"";position:absolute;inset:-14px;border-radius:50%;border:14px solid transparent;border-top-color:var(--blue);transform:rotate(25deg)}.time{font-size:42px;font-weight:800;z-index:1}.timer small{position:absolute;bottom:58px;color:var(--muted);z-index:2}.controls{display:flex;gap:10px;flex-wrap:wrap}.primary{background:var(--blue);color:white;padding:11px 16px;border-radius:10px;font-weight:700}.secondary{background:#eef1f6;color:#263143;padding:11px 16px;border-radius:10px;font-weight:700}.goal{margin-top:18px}.goal input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px}.coach{display:flex;gap:12px}.avatar{width:40px;height:40px;border-radius:12px;background:var(--blue2);display:grid;place-items:center;font-weight:800;color:var(--blue)}textarea{width:100%;min-height:105px;border:1px solid var(--line);border-radius:12px;padding:12px;resize:vertical}.answer{background:#f7f8ff;border-radius:12px;padding:14px;margin-top:12px;line-height:1.55}.insight{padding:14px;border-radius:13px;background:#fafbfc;border:1px solid var(--line);margin-bottom:10px}.toggle{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}.switch{width:45px;height:25px;border-radius:20px;background:#cdd3df;padding:3px}.switch i{display:block;width:19px;height:19px;background:#fff;border-radius:50%;transition:.2s}.switch.on{background:var(--blue)}.switch.on i{transform:translateX(20px)}.toast{position:fixed;right:25px;bottom:25px;background:#121826;color:#fff;padding:13px 16px;border-radius:11px;opacity:0;transform:translateY(10px);transition:.25s}.toast.show{opacity:1;transform:none}@media(max-width:900px){.side{width:75px}.brand{font-size:0}.brand span{font-size:20px}.nav button{font-size:0;text-align:center}.nav button:first-letter{font-size:18px}.main{margin-left:75px;width:calc(100% - 75px);padding:20px}.stats,.three,.two{grid-template-columns:1fr 1fr}.pulse{flex-direction:column}}@media(max-width:620px){.stats,.three,.two{grid-template-columns:1fr}.main{padding:14px}.timer{width:180px;height:180px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand">Focus<span>Lens</span> AI</div>
+  <div class="nav">
+    <button class="active" data-page="dashboard">🏠 Dashboard</button>
+    <button data-page="pulse">🎯 Focus Pulse</button>
+    <button data-page="coach">🤖 AI Coach</button>
+    <button data-page="insights">📊 Insights</button>
+    <button data-page="nudges">🔔 Smart Nudges</button>
+    <button data-page="privacy">🔐 Privacy</button>
+  </div>
+</aside>
+<main class="main">
+<header class="top"><div><h1 id="title">Dashboard</h1><div class="sub">Better attention. Smarter learning.</div></div><div class="pill">● Prototype mode</div></header>
+
+<section id="dashboard" class="page active">
+<div class="grid stats">
+<div class="card"><div class="label">Focus score</div><div class="metric" id="score">82/100</div><div class="delta">+6 vs last week</div></div>
+<div class="card"><div class="label">Study time</div><div class="metric" id="study">3h 40m</div><div class="delta">Goal: 4h</div></div>
+<div class="card"><div class="label">Distraction time</div><div class="metric">27m</div><div class="delta">↓ 12% this week</div></div>
+<div class="card"><div class="label">Best focus window</div><div class="metric" style="font-size:23px">9–11 AM</div><div class="delta">Your strongest period</div></div>
+</div>
+<div class="grid two" style="margin-top:18px">
+<div class="card"><h2>Daily focus graph</h2>
+<div class="barrow"><span class="day">Mon</span><div class="track"><div class="fill" style="width:76%"></div></div><b>76</b></div>
+<div class="barrow"><span class="day">Tue</span><div class="track"><div class="fill" style="width:88%"></div></div><b>88</b></div>
+<div class="barrow"><span class="day">Wed</span><div class="track"><div class="fill" style="width:69%"></div></div><b>69</b></div>
+<div class="barrow"><span class="day">Thu</span><div class="track"><div class="fill" style="width:91%"></div></div><b>91</b></div>
+<div class="barrow"><span class="day">Fri</span><div class="track"><div class="fill" style="width:82%"></div></div><b>82</b></div>
+</div>
+<div class="card"><h2>Today's recommendation</h2><div class="insight"><b>Protect your 9–11 AM window.</b><br><span class="sub">Try a 25-minute focus session before checking notifications.</span></div><button class="primary" onclick="go('pulse')">Start focus session</button></div>
+</div>
+</section>
+
+<section id="pulse" class="page">
+<div class="grid two">
+<div class="card"><h2>Focus Pulse</h2><div class="pulse"><div class="timer"><div class="time" id="timer">25:00</div><small>FOCUS</small></div><div><p class="sub" style="font-size:15px">A simple 25-minute study sprint. Start, focus, then take a short break.</p><div class="controls"><button class="primary" id="startBtn" onclick="toggleTimer()">Start</button><button class="secondary" onclick="resetTimer()">Reset</button></div><div class="goal"><label class="label">Study goal</label><input id="goal" value="Finish one chapter" oninput="saveGoal()"/></div></div></div></div>
+<div class="card"><h2>Session status</h2><div class="insight"><b id="status">Ready when you are.</b><br><span class="sub">Completed sessions today: <span id="sessions">3</span></span></div><div class="insight">🔔 Smart nudge: after this session, take a 5-minute break.</div></div>
+</div>
+</section>
+
+<section id="coach" class="page">
+<div class="card"><h2>🤖 AI Coach</h2><div class="coach"><div class="avatar">AI</div><div style="flex:1"><p class="sub">Ask a study or focus question.</p><textarea id="question" placeholder="e.g. I keep checking my phone while studying. What should I do?"></textarea><button class="primary" style="margin-top:10px" onclick="coach()">Get recommendation</button><div class="answer" id="answer">Your recommendation will appear here.</div></div></div></div>
+</section>
+
+<section id="insights" class="page">
+<div class="grid two"><div class="card"><h2>Weekly focus pattern</h2>
+<div class="barrow"><span class="day">Mon</span><div class="track"><div class="fill" style="width:76%"></div></div><b>76</b></div><div class="barrow"><span class="day">Tue</span><div class="track"><div class="fill" style="width:88%"></div></div><b>88</b></div><div class="barrow"><span class="day">Wed</span><div class="track"><div class="fill" style="width:69%"></div></div><b>69</b></div><div class="barrow"><span class="day">Thu</span><div class="track"><div class="fill" style="width:91%"></div></div><b>91</b></div><div class="barrow"><span class="day">Fri</span><div class="track"><div class="fill" style="width:82%"></div></div><b>82</b></div>
+</div><div class="card"><h2>Best study hours</h2><div class="insight"><b>9:00–11:00 AM</b><br><span class="sub">Highest sustained focus</span></div><div class="insight"><b>7:00–8:30 PM</b><br><span class="sub">Good secondary window</span></div><h2 style="margin-top:20px">Progress</h2><div class="metric">+14%</div><div class="sub">Focus consistency over the last 4 weeks</div></div></div>
+</section>
+
+<section id="nudges" class="page">
+<div class="card"><h2>🔔 Smart Nudges</h2>
+<div class="toggle"><div><b>Break reminders</b><div class="sub">Suggest a short break after long focus periods.</div></div><div class="switch on" onclick="flip(this)"><i></i></div></div>
+<div class="toggle"><div><b>Distraction alerts</b><div class="sub">Alert only when distraction patterns persist.</div></div><div class="switch on" onclick="flip(this)"><i></i></div></div>
+<div class="toggle"><div><b>Focus recommendations</b><div class="sub">Use your study patterns to suggest better sessions.</div></div><div class="switch on" onclick="flip(this)"><i></i></div></div>
+</div>
+</section>
+
+<section id="privacy" class="page">
+<div class="grid two"><div class="card"><h2>🔐 Privacy</h2><div class="insight"><b>Minimal data collection</b><br><span class="sub">Only data needed for focus insights is used in this prototype.</span></div><div class="insight"><b>Clear consent</b><br><span class="sub">You control whether activity signals are enabled.</span></div><div class="insight"><b>No unnecessary surveillance</b><br><span class="sub">FocusLens is designed to improve attention, not monitor everything you do.</span></div></div><div class="card"><h2>Your control</h2><div class="toggle"><b>Activity insights consent</b><div class="switch on" onclick="flip(this)"><i></i></div></div><button class="secondary" onclick="toast('Privacy preferences saved')">Save preferences</button></div></div>
+</section>
+</main></div><div class="toast" id="toast"></div>
+<script>
+let current='dashboard', seconds=1500, running=false, interval=null;
+const titles={dashboard:'Dashboard',pulse:'Focus Pulse',coach:'AI Coach',insights:'Insights',nudges:'Smart Nudges',privacy:'Privacy'};
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+function go(p){current=p;document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));document.getElementById('title').textContent=titles[p]}
+function drawTimer(){let m=Math.floor(seconds/60),s=seconds%60;document.getElementById('timer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+function toggleTimer(){running=!running;document.getElementById('startBtn').textContent=running?'Pause':'Start';document.getElementById('status').textContent=running?'Focus session in progress…':'Session paused.';if(running){interval=setInterval(()=>{seconds--;drawTimer();if(seconds<=0){clearInterval(interval);running=false;seconds=1500;drawTimer();document.getElementById('startBtn').textContent='Start';document.getElementById('status').textContent='Session complete! Great work.';let n=+document.getElementById('sessions').textContent+1;document.getElementById('sessions').textContent=n;toast('Focus session completed 🎉')}},1000)}else clearInterval(interval)}
+function resetTimer(){clearInterval(interval);running=false;seconds=1500;drawTimer();document.getElementById('startBtn').textContent='Start';document.getElementById('status').textContent='Ready when you are.'}
+function saveGoal(){localStorage.setItem('focuslens-goal',document.getElementById('goal').value)}
+function coach(){let q=document.getElementById('question').value.toLowerCase(),a='';if(!q)a='Start with one small task, remove one distraction, and use a 25-minute focus sprint.';else if(q.includes('phone')||q.includes('distract'))a='Put your phone out of reach for one 25-minute sprint. Turn off non-essential notifications, define one task, and take a 5-minute break when the timer ends.';else if(q.includes('tired')||q.includes('break'))a='Take a short 5-minute break, move away from the screen, drink water, then return with a smaller task.';else if(q.includes('plan')||q.includes('study'))a='Choose one concrete outcome for the next 25 minutes. When the timer ends, record what you finished before deciding the next task.';else a='Try a focused 25-minute sprint with one clear goal. If you notice repeated interruptions, use a short break and restart with a smaller task.';document.getElementById('answer').textContent=a}
+function flip(el){el.classList.toggle('on');toast(el.classList.contains('on')?'Nudge enabled':'Nudge disabled')}
+function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+const saved=localStorage.getItem('focuslens-goal');if(saved)document.getElementById('goal').value=saved;drawTimer();
+</script>
+</body></html>
